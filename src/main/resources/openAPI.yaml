@@ -1,0 +1,84 @@
+---
+openapi: 3.0.1
+info:
+  title: MoneyCalculation API
+  version: 1.0.0
+servers:
+  - url: http://localhost:8080
+tags:
+  - name: moneycalculation
+    description: This is the money calculation
+paths:
+  "/moneycalculation/calc/":
+    put:
+      tags:
+        - moneycalculation
+      operationId: calcMoneyCalculation
+      parameters:
+        - name: newValue
+          in: query
+          description: The new amount of money.
+          required: true
+          schema:
+            type: number
+            format: double
+          example: 234.23
+        - name: oldValue
+          in: query
+          description: The old amount of money.
+          required: true
+          schema:
+            type: number
+            format: double
+          example: 45.32
+      responses:
+        '200':
+          description: Success response
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/MoneyCalculation"
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/MoneyCalculationError"
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/MoneyCalculationError"
+components:
+  schemas:
+    MoneyCalculationError:
+      type: object
+      properties:
+        error_code:
+          type: string
+          enum:
+            - NEGATIVE_NUMBER
+        error_description:
+          type: string
+    MoneyCalculation:
+      type: object
+      properties:
+        data:
+          type: array
+          items:
+            "$ref": "#/components/schemas/MoneyData"
+    MoneyData:
+      type: object
+      properties:
+        moneyUnitFormatted:
+          type: string
+        newAmount:
+          type: integer
+          format: double
+        oldAmount:
+          type: integer
+          format: double
+        difference:
+          type: integer
+          format: double
